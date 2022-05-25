@@ -12,8 +12,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
-
+#import django_heroku
+import dj_database_url
+WHITENOISE_USE_FINDERS = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,6 +37,7 @@ ALLOWED_HOSTS = ["https://smart-hospital-system.herokuapp.com/"
 
 INSTALLED_APPS = [
     # my apps
+    'whitenoise.runserver_nostatic',
     'user.apps.UserConfig',
     'xpatient.apps.XpatientConfig',
     
@@ -66,8 +68,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -157,7 +160,7 @@ MEDIA_URL =  '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
 # Activate Django-Heroku
-django_heroku.settings(locals())
+#django_heroku.settings(locals())
 
 
 # Default primary key field type
@@ -211,3 +214,8 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'en-US'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
